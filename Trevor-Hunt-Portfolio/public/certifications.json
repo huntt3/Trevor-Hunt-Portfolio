@@ -1,0 +1,32 @@
+{
+  "Certifications": [
+    {
+      "title": "Web Development Certification",
+      "description": "",
+      "toolsUsed": ["HTML", "CSS"],
+      "link": "https://www.credential.net/13d7eb18-7147-4e08-999b-f435eca5a9f0#acc.xVOWLY5I",
+      "image": "/img/WebDevelopmentCertification.png"
+    },
+    {
+      "title": "AI-Powered Javascript Certification",
+      "description": "",
+      "toolsUsed": ["Javascript", "HTML", "CSS"],
+      "link": "https://www.credential.net/74895c2a-81eb-46f6-aa93-a63c94df5c28#acc.nxjXbR0o",
+      "image": "/img/AI-PoweredJavascriptCertification.png"
+    },
+    {
+      "title": "AI Professional Skills Certification",
+      "description": "",
+      "toolsUsed": ["Prompt Engineering", "AI Literacy"],
+      "link": "https://www.credential.net/cd6a93f7-aaa2-4c20-a6ee-e83b8b14a920#acc.UuemjOiv",
+      "image": "/img/AIProfessionalSkillsCertification.png"
+    },
+    {
+      "title": "Intercultural Skills Certification",
+      "description": "",
+      "toolsUsed": ["Intercultural Skills", "Teamwork"],
+      "link": "https://www.credential.net/9d93a214-2852-482f-b018-bba16830b974#acc.dbQvJLjf",
+      "image": "/img/InterculturalSkillsCertification.png"
+    }
+  ]
+}

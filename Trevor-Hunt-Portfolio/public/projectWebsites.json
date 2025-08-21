@@ -1,5 +1,5 @@
 {
-  "EraScore": [
+  "Projects": [
     {
       "title": "NASA API",
       "description": "Interactive web app that fetches data from NASA's API. I embeded videos and showcased photos sorted and filtered by date. Descriptions were shown in a modal when clicked.",
@@ -19,6 +19,27 @@
       "description": "",
       "toolsUsed": ["React", "HTML", "Tailwind"],
       "link": "https://huntt3.github.io/06-Charity-water-game/",
+      "image": ""
+    },
+    {
+      "title": "Fernet Decryption",
+      "description": "",
+      "toolsUsed": ["Python", "Pillow", "Leadership"],
+      "link": "https://huntt3.github.io/06-Charity-water-game/",
+      "image": ""
+    },
+    {
+      "title": "Capsim Simulation",
+      "description": "",
+      "toolsUsed": ["Excel", "Leadership"],
+      "link": "https://huntt3.github.io/06-Charity-water-game/",
+      "image": ""
+    },
+    {
+      "title": "Family Tree Database",
+      "description": "",
+      "toolsUsed": ["Oracle SQL", "Leadership"],
+      "link": "",
       "image": ""
     }
   ]
