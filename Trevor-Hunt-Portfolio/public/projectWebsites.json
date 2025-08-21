@@ -1,0 +1,25 @@
+{
+  "EraScore": [
+    {
+      "title": "NASA API",
+      "description": "Interactive web app that fetches data from NASA's API. I embeded videos and showcased photos sorted and filtered by date. Descriptions were shown in a modal when clicked.",
+      "toolsUsed": ["Javascript", "HTML", "CSS"],
+      "link": "https://github.com/huntt3/07-nasa-space-explorer",
+      "image": ""
+    },
+    {
+      "title": "Charity: Water Game",
+      "description": "Javascript pinball game in cooperation with Charity: Water. Incorporated Matter.js and bootstrap to make a functional pinball inspired game with modals as menus and alerts.",
+      "toolsUsed": ["Javascript", "HTML", "CSS", "Bootstrap"],
+      "link": "https://huntt3.github.io/06-Charity-water-game/",
+      "image": ""
+    },
+    {
+      "title": "Civilization 6 Helper",
+      "description": "",
+      "toolsUsed": ["React", "HTML", "Tailwind"],
+      "link": "https://huntt3.github.io/06-Charity-water-game/",
+      "image": ""
+    }
+  ]
+}
