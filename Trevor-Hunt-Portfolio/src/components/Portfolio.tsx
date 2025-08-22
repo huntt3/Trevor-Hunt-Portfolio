@@ -1,32 +1,45 @@
 import React, { useState, useEffect, useMemo } from "react";
 import ProjectCard from "./ProjectCard";
+import CertificationCard from "./CertificationCard";
 import FilterBar from "./FilterBar";
-import type { ProjectData } from "../types/project";
+import type { ProjectData, CertificationData } from "../types/project";
 
 const Portfolio: React.FC = () => {
   const [projectData, setProjectData] = useState<ProjectData>({});
+  const [certificationData, setCertificationData] = useState<CertificationData>(
+    {}
+  );
   const [selectedTools, setSelectedTools] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchProjects = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch("/projectWebsites.json");
-        if (!response.ok) {
-          throw new Error("Failed to fetch projects");
+        const [projectsResponse, certificationsResponse] = await Promise.all([
+          fetch("/projectWebsites.json"),
+          fetch("/certifications.json"),
+        ]);
+
+        if (!projectsResponse.ok || !certificationsResponse.ok) {
+          throw new Error("Failed to fetch data");
         }
-        const data: ProjectData = await response.json();
-        setProjectData(data);
+
+        const projects: ProjectData = await projectsResponse.json();
+        const certifications: CertificationData =
+          await certificationsResponse.json();
+
+        setProjectData(projects);
+        setCertificationData(certifications);
       } catch (err) {
-        setError("Failed to load projects");
-        console.error("Error fetching projects:", err);
+        setError("Failed to load data");
+        console.error("Error fetching data:", err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchProjects();
+    fetchData();
   }, []);
 
   // Get all projects from all categories
@@ -34,14 +47,22 @@ const Portfolio: React.FC = () => {
     return Object.values(projectData).flat();
   }, [projectData]);
 
-  // Get all unique tools
+  // Get all certifications from all categories
+  const allCertifications = useMemo(() => {
+    return Object.values(certificationData).flat();
+  }, [certificationData]);
+
+  // Get all unique tools from both projects and certifications
   const allTools = useMemo(() => {
     const toolsSet = new Set<string>();
     allProjects.forEach((project) => {
       project.toolsUsed.forEach((tool) => toolsSet.add(tool));
     });
+    allCertifications.forEach((certification) => {
+      certification.toolsUsed.forEach((tool) => toolsSet.add(tool));
+    });
     return Array.from(toolsSet).sort();
-  }, [allProjects]);
+  }, [allProjects, allCertifications]);
 
   // Filter projects based on selected tools
   const filteredProjects = useMemo(() => {
@@ -53,6 +74,17 @@ const Portfolio: React.FC = () => {
       selectedTools.some((tool) => project.toolsUsed.includes(tool))
     );
   }, [allProjects, selectedTools]);
+
+  // Filter certifications based on selected tools
+  const filteredCertifications = useMemo(() => {
+    if (selectedTools.length === 0) {
+      return allCertifications;
+    }
+
+    return allCertifications.filter((certification) =>
+      selectedTools.some((tool) => certification.toolsUsed.includes(tool))
+    );
+  }, [allCertifications, selectedTools]);
 
   const handleToolToggle = (tool: string) => {
     setSelectedTools((prev) =>
@@ -69,7 +101,7 @@ const Portfolio: React.FC = () => {
       <div className="min-h-screen bg-gray-100 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading projects...</p>
+          <p className="text-gray-600">Loading portfolio...</p>
         </div>
       </div>
     );
@@ -108,37 +140,87 @@ const Portfolio: React.FC = () => {
           onClearFilters={handleClearFilters}
         />
 
-        <div className="mb-6">
-          <p className="text-gray-600">
-            Showing {filteredProjects.length} of {allProjects.length} projects
-            {selectedTools.length > 0 && (
-              <span> filtered by: {selectedTools.join(", ")}</span>
-            )}
-          </p>
-        </div>
+        {/* Projects Section */}
+        <section className="mb-16">
+          <h2 className="text-3xl font-bold text-gray-800 mb-6">Projects</h2>
 
-        {filteredProjects.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredProjects.map((project, index) => (
-              <ProjectCard
-                key={`${project.title}-${index}`}
-                project={project}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12">
-            <p className="text-gray-600 mb-4">
-              No projects found matching your selected filters.
+          <div className="mb-6">
+            <p className="text-gray-600">
+              Showing {filteredProjects.length} of {allProjects.length} projects
+              {selectedTools.length > 0 && (
+                <span> filtered by: {selectedTools.join(", ")}</span>
+              )}
             </p>
-            <button
-              onClick={handleClearFilters}
-              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-            >
-              Clear Filters
-            </button>
           </div>
-        )}
+
+          {filteredProjects.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredProjects.map((project, index) => (
+                <ProjectCard
+                  key={`project-${project.title}-${index}`}
+                  project={project}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-gray-600 mb-4">
+                No projects found matching your selected filters.
+              </p>
+            </div>
+          )}
+        </section>
+
+        {/* Certifications Section */}
+        <section className="mb-16">
+          <h2 className="text-3xl font-bold text-gray-800 mb-6">
+            Certifications
+          </h2>
+
+          <div className="mb-6">
+            <p className="text-gray-600">
+              Showing {filteredCertifications.length} of{" "}
+              {allCertifications.length} certifications
+              {selectedTools.length > 0 && (
+                <span> filtered by: {selectedTools.join(", ")}</span>
+              )}
+            </p>
+          </div>
+
+          {filteredCertifications.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredCertifications.map((certification, index) => (
+                <CertificationCard
+                  key={`certification-${certification.title}-${index}`}
+                  certification={certification}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-gray-600 mb-4">
+                No certifications found matching your selected filters.
+              </p>
+            </div>
+          )}
+        </section>
+
+        {/* Clear Filters Button */}
+        {selectedTools.length > 0 &&
+          filteredProjects.length === 0 &&
+          filteredCertifications.length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-gray-600 mb-4">
+                No items found matching your selected filters.
+              </p>
+              <button
+                onClick={handleClearFilters}
+                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+              >
+                Clear Filters
+              </button>
+            </div>
+          )}
       </div>
     </div>
   );
