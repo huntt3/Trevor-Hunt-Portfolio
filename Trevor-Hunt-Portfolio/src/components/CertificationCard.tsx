@@ -27,7 +27,7 @@ const CertificationCard: React.FC<CertificationCardProps> = ({
       {certification.image && (
         <div className="h-48 bg-gray-200 flex items-center justify-center">
           <img
-            src={certification.image}
+            src={`${import.meta.env.BASE_URL}${certification.image}`}
             alt={certification.title}
             className="max-h-40 max-w-full object-contain mx-auto"
             onError={(e) => {
