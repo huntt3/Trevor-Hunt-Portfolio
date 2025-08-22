@@ -8,14 +8,28 @@ interface CertificationCardProps {
 const CertificationCard: React.FC<CertificationCardProps> = ({
   certification,
 }) => {
+  // Handler for card click
+  const handleCardClick = () => {
+    window.open(certification.link, "_blank", "noopener,noreferrer");
+  };
+
   return (
-    <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden border border-transparent hover:border-green-400 transform hover:scale-105 transition-transform duration-200">
+    <div
+      className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden border border-transparent hover:border-green-400 transform hover:scale-105 transition-transform duration-200 cursor-pointer"
+      tabIndex={0}
+      role="button"
+      aria-label={`View ${certification.title}`}
+      onClick={handleCardClick}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") handleCardClick();
+      }}
+    >
       {certification.image && (
         <div className="h-48 bg-gray-200 flex items-center justify-center">
           <img
             src={certification.image}
             alt={certification.title}
-            className="w-full h-full object-cover"
+            className="max-h-40 max-w-full object-contain mx-auto"
             onError={(e) => {
               const target = e.target as HTMLImageElement;
               target.style.display = "none";
@@ -54,6 +68,7 @@ const CertificationCard: React.FC<CertificationCardProps> = ({
           target="_blank"
           rel="noopener noreferrer"
           className="inline-block bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors duration-300"
+          onClick={(e) => e.stopPropagation()}
         >
           View Credential
         </a>
