@@ -154,10 +154,9 @@ const Portfolio: React.FC = () => {
     <div className="min-h-screen bg-gray-100">
       <div className="container mx-auto px-4 py-8">
         <header className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">Trevor Hunt</h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Welcome to my portfolio!
-          </p>
+          <h1 className="text-4xl font-bold text-gray-800 mb-4">
+            Trevor Hunt's Portfolio
+          </h1>
         </header>
 
         <div
