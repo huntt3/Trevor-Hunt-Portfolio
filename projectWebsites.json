@@ -1,0 +1,66 @@
+{
+  "Projects": [
+    {
+      "title": "Civilization 6 Helper",
+      "description": "Interactive trackers for players that automatically calculates several important breakpoints and highlights profitable detours.",
+      "toolsUsed": ["React", "HTML", "Tailwind", "Vite"],
+      "link": "https://huntt3.github.io/Civ-6-Helper/",
+      "image": ""
+    },
+    {
+      "title": "Charity: Water Game",
+      "description": "Pinball game in cooperation with Charity: Water. Incorporated Matter.js and bootstrap to make a functional pinball inspired game with modals as menus and alerts.",
+      "toolsUsed": ["Javascript", "HTML", "CSS", "Bootstrap"],
+      "link": "https://huntt3.github.io/06-Charity-water-game/",
+      "image": ""
+    },
+    {
+      "title": "Loreal Routine Builder",
+      "description": "Wrapper for a customized open-ai chatbot that gave customized answers based on chosen items and given answers.",
+      "toolsUsed": [
+        "Javascript",
+        "HTML",
+        "CSS",
+        "Chatbot",
+        "Cloudflare Workers"
+      ],
+      "link": "https://huntt3.github.io/09-prj-loreal-routine-builder/",
+      "image": ""
+    },
+    {
+      "title": "NASA Gallery",
+      "description": "Interactive web app that fetches data from NASA's API. I embeded videos and showcased photos sorted and filtered by date. Descriptions were shown in a modal when clicked.",
+      "toolsUsed": ["Javascript", "HTML", "CSS"],
+      "link": "https://huntt3.github.io/07-nasa-space-explorer/",
+      "image": ""
+    },
+    {
+      "title": "Capsim Simulation",
+      "description": "Led team to end in the top 12% of teams through an automated forcasting excel document and effective business strategy.",
+      "toolsUsed": ["Excel", "Leadership", "Teamwork"],
+      "link": "",
+      "image": ""
+    },
+    {
+      "title": "Family Tree Database",
+      "description": "Manipulated and queried mock company database using a variety of joins and keywords.",
+      "toolsUsed": ["Oracle SQL"],
+      "link": "",
+      "image": ""
+    },
+    {
+      "title": "Fernet Decryption",
+      "description": "Decrypted json file and displayed results as well as manipulating a picture.",
+      "toolsUsed": ["Python", "Pillow", "Teamwork"],
+      "link": "https://github.com/huntt3/Cat_FinalProject",
+      "image": ""
+    },
+    {
+      "title": "LeetCode Group Project",
+      "description": "Led team to display our leetcode solutions. Mine was Median of Two Sorted Arrays",
+      "toolsUsed": ["C#", "ASP.NET Core", "Leadership", "Teamwork"],
+      "link": "https://github.com/huntt3/LeetCode-Group-Project",
+      "image": ""
+    }
+  ]
+}
