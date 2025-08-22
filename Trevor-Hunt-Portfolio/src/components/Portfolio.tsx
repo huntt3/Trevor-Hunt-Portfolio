@@ -5,6 +5,15 @@ import FilterBar from "./FilterBar";
 import type { ProjectData, CertificationData } from "../types/project";
 
 const Portfolio: React.FC = () => {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState("");
+  // Load huntt3_Pt1Lab5.txt for modal
+  const showFamilyTreeModal = async () => {
+    const response = await fetch("/huntt3_Pt1Lab5.txt");
+    const text = await response.text();
+    setModalContent(text);
+    setModalOpen(true);
+  };
   const [projectData, setProjectData] = useState<ProjectData>({});
   const [certificationData, setCertificationData] = useState<CertificationData>(
     {}
@@ -148,7 +157,9 @@ const Portfolio: React.FC = () => {
 
         {/* Projects Section */}
         <section className="mb-16">
-          <h2 className="text-3xl font-bold text-gray-800 mb-6">Projects</h2>
+          <h2 className="text-3xl font-bold text-gray-800 mb-6">
+            Featured Projects
+          </h2>
 
           <div className="mb-6">
             <p className="text-gray-600">
@@ -165,8 +176,39 @@ const Portfolio: React.FC = () => {
                 <ProjectCard
                   key={`project-${project.title}-${index}`}
                   project={project}
+                  onViewFamilyTree={
+                    project.title === "Family Tree Database"
+                      ? showFamilyTreeModal
+                      : undefined
+                  }
                 />
               ))}
+              {/* Modal for Family Tree Database */}
+              {modalOpen && (
+                  <div
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60"
+                    onClick={() => setModalOpen(false)}
+                  >
+                    <div
+                      className="bg-white rounded-lg shadow-lg max-w-2xl w-full p-6 relative"
+                      onClick={e => e.stopPropagation()}
+                    >
+                      <button
+                        className="absolute top-2 right-2 text-gray-500 hover:text-gray-800 text-xl"
+                        onClick={() => setModalOpen(false)}
+                        aria-label="Close"
+                      >
+                        &times;
+                      </button>
+                      <h2 className="text-2xl font-bold mb-4">
+                        Family Tree Database SQL
+                      </h2>
+                      <pre className="overflow-x-auto overflow-y-auto whitespace-pre-wrap text-sm bg-gray-100 p-4 rounded max-h-[60vh]">
+                        {modalContent}
+                      </pre>
+                    </div>
+                  </div>
+              )}
             </div>
           ) : (
             <div className="text-center py-12">

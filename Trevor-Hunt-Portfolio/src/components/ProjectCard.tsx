@@ -3,9 +3,13 @@ import type { Project } from "../types/project";
 
 interface ProjectCardProps {
   project: Project;
+  onViewFamilyTree?: () => void;
 }
 
-const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
+const ProjectCard: React.FC<ProjectCardProps> = ({
+  project,
+  onViewFamilyTree,
+}) => {
   return (
     <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden border border-transparent hover:border-blue-400 transform hover:scale-105 transition-transform duration-200">
       {project.image && (
@@ -45,14 +49,25 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
           ))}
         </div>
 
-        <a
-          href={project.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors duration-300"
-        >
-          View Project
-        </a>
+        {project.title === "Family Tree Database" &&
+        typeof onViewFamilyTree === "function" ? (
+          <button
+            type="button"
+            className="inline-block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors duration-300"
+            onClick={onViewFamilyTree}
+          >
+            View Project
+          </button>
+        ) : (
+          <a
+            href={project.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors duration-300"
+          >
+            View Project
+          </a>
+        )}
       </div>
     </div>
   );

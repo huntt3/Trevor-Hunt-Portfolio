@@ -1,0 +1,77 @@
+DROP table CUSTOMER1 CASCADE CONSTRAINTS;
+DROP table ORDERS1 CASCADE CONSTRAINTS;
+DROP table PRODUCT CASCADE CONSTRAINTS;
+DROP table ORDER_LINE CASCADE CONSTRAINTS;
+
+
+
+alter table DEPARTMENT
+DROP constraint ck_depno;
+alter table DEPARTMENT
+add constraint ck_depno check (Dept_no between 1 and 18);
+
+alter table DEPARTMENT
+DROP constraint ck_depname;
+alter table DEPARTMENT
+add constraint ck_depname check (Dept_name in ('ADMINISTRATION','HEADQUARTERS','PRODUCTION', 'R_and_D'));
+
+alter table EMPLOYEE
+DROP constraint ck_sal;
+alter table EMPLOYEE
+add constraint ck_sal check (Salary between 30000 and 300000);
+
+alter table WORKS_ON
+DROP constraint ck_workhrs;
+alter table WORKS_ON
+add constraint ck_workhrs check (Work_hrs <= 100);
+
+alter table PROJECT
+DROP constraint ck_proj_no;
+alter table PROJECT
+add constraint ck_proj_no check (Proj_no between 1 and 100);
+
+alter table LOCATION
+DROP constraint ck_deploc;
+alter table LOCATION
+add constraint ck_deploc check (Location in ('SEATTLE', 'ORLANDO', 'CLEVELAND', 'CINCINNATI', 'MIAMI'));
+
+
+
+INSERT INTO LOCATION
+Values('MIAMI', 100, 'FL');
+COMMIT;
+
+INSERT INTO DEPARTMENT (Dept_name, Dept_no, Mgr_Start_date)
+Values('R_and_D', 18, '23-Jan-2023');
+COMMIT;
+
+INSERT INTO Department_Location
+VALUES(18, 'MIAMI');
+COMMIT;
+
+INSERT INTO PROJECT
+VALUES('Research', 51, 18);
+COMMIT;
+
+INSERT INTO EMPLOYEE
+VALUES ('357122832', 'Smyth', 'H', 'Sam', 'M', '25-Dec-1976', '859, Brickell Way, Miami, FL', 270000, null, 18);
+COMMIT;
+
+INSERT INTO WORKS_ON
+Values('357122832', 51, 89);
+COMMIT;
+
+INSERT ALL
+into Dependent values('357122832', 'Molly', 'F', '23-Jan-2019', 'DAUGHTER')
+into Dependent values('357122832', 'Jane', 'F', '16-Jan-1977', 'SPOUSE')
+into Dependent values('357122832', 'Mike', 'M', '29-May-2014', 'SON')
+select * from dual;
+COMMIT;
+
+UPDATE DEPARTMENT
+SET Mgrssno='357122832'
+WHERE Dept_name='R_and_D';
+COMMIT;
+
+
+ 
