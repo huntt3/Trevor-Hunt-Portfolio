@@ -21,7 +21,7 @@ const Portfolio: React.FC = () => {
   const [modalContent, setModalContent] = useState("");
   // Load huntt3_Pt1Lab5.txt for modal
   const showFamilyTreeModal = async () => {
-    const response = await fetch("/huntt3_Pt1Lab5.txt");
+    const response = await fetch("huntt3_Pt1Lab5.txt");
     const text = await response.text();
     setModalContent(text);
     setModalOpen(true);
@@ -44,8 +44,8 @@ const Portfolio: React.FC = () => {
     const fetchData = async () => {
       try {
         const [projectsResponse, certificationsResponse] = await Promise.all([
-          fetch("/projectWebsites.json"),
-          fetch("/certifications.json"),
+          fetch("projectWebsites.json"),
+          fetch("certifications.json"),
         ]);
 
         if (!projectsResponse.ok || !certificationsResponse.ok) {
@@ -233,7 +233,7 @@ const Portfolio: React.FC = () => {
                           Capsim Simulation Excel
                         </h2>
                         <a
-                          href="/Capsim.xlsx"
+                          href="Capsim.xlsx"
                           download
                           className="inline-block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors duration-300 mb-4"
                         >
