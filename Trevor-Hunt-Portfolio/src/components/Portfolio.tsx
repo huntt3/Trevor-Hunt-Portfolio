@@ -52,16 +52,22 @@ const Portfolio: React.FC = () => {
     return Object.values(certificationData).flat();
   }, [certificationData]);
 
-  // Get all unique tools from both projects and certifications
+  // Get all tools and sort by number of times used (descending)
   const allTools = useMemo(() => {
-    const toolsSet = new Set<string>();
+    const toolCounts: Record<string, number> = {};
     allProjects.forEach((project) => {
-      project.toolsUsed.forEach((tool) => toolsSet.add(tool));
+      project.toolsUsed.forEach((tool) => {
+        toolCounts[tool] = (toolCounts[tool] || 0) + 1;
+      });
     });
     allCertifications.forEach((certification) => {
-      certification.toolsUsed.forEach((tool) => toolsSet.add(tool));
+      certification.toolsUsed.forEach((tool) => {
+        toolCounts[tool] = (toolCounts[tool] || 0) + 1;
+      });
     });
-    return Array.from(toolsSet).sort();
+    return Object.entries(toolCounts)
+      .sort((a, b) => b[1] - a[1])
+      .map(([tool]) => tool);
   }, [allProjects, allCertifications]);
 
   // Filter projects based on selected tools
