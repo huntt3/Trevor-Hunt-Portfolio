@@ -1,10 +1,22 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import ProjectCard from "./ProjectCard";
 import CertificationCard from "./CertificationCard";
 import FilterBar from "./FilterBar";
 import type { ProjectData, CertificationData } from "../types/project";
 
 const Portfolio: React.FC = () => {
+  const filterBarRef = useRef<HTMLDivElement>(null);
+  const [isSticky, setIsSticky] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!filterBarRef.current) return;
+      const rect = filterBarRef.current.getBoundingClientRect();
+      setIsSticky(rect.top <= 0);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState("");
   // Load huntt3_Pt1Lab5.txt for modal
@@ -148,12 +160,17 @@ const Portfolio: React.FC = () => {
           </p>
         </header>
 
-        <FilterBar
-          tools={allTools}
-          selectedTools={selectedTools}
-          onToolToggle={handleToolToggle}
-          onClearFilters={handleClearFilters}
-        />
+        <div
+          ref={filterBarRef}
+          className={isSticky ? "sticky top-0 z-40 bg-gray-100" : ""}
+        >
+          <FilterBar
+            tools={allTools}
+            selectedTools={selectedTools}
+            onToolToggle={handleToolToggle}
+            onClearFilters={handleClearFilters}
+          />
+        </div>
 
         {/* Projects Section */}
         <section className="mb-16">
