@@ -50,49 +50,53 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         </div>
       )}
 
-      <div className="p-6">
+      <div className="p-6 flex flex-col h-full">
         <h3 className="text-xl font-semibold text-gray-800 mb-2">
           {project.title}
         </h3>
 
-        <p className="text-gray-600 mb-4 line-clamp-3">
+        <p className="text-gray-600 min-h-[3.5rem] mb-2 line-clamp-3">
           {project.description || "No description available"}
         </p>
 
-        <div className="flex flex-wrap gap-2 mb-4">
-          {project.toolsUsed.map((tool, index) => (
-            <span
-              key={index}
-              className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full font-medium"
-            >
-              {tool}
-            </span>
-          ))}
+        <div className="flex-1 flex items-center">
+          <div className="flex flex-wrap gap-2 w-full justify-center mb-4">
+            {project.toolsUsed.map((tool, index) => (
+              <span
+                key={index}
+                className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full font-medium"
+              >
+                {tool}
+              </span>
+            ))}
+          </div>
         </div>
 
-        {project.title === "Family Tree Database" &&
-        typeof onViewFamilyTree === "function" ? (
-          <button
-            type="button"
-            className="inline-block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors duration-300"
-            onClick={(e) => {
-              e.stopPropagation();
-              onViewFamilyTree();
-            }}
-          >
-            View Project
-          </button>
-        ) : (
-          <a
-            href={project.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors duration-300"
-            onClick={(e) => e.stopPropagation()}
-          >
-            View Project
-          </a>
-        )}
+        <div className="mt-auto">
+          {project.title === "Family Tree Database" &&
+          typeof onViewFamilyTree === "function" ? (
+            <button
+              type="button"
+              className="inline-block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors duration-300"
+              onClick={(e) => {
+                e.stopPropagation();
+                onViewFamilyTree();
+              }}
+            >
+              View Project
+            </button>
+          ) : (
+            <a
+              href={project.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors duration-300"
+              onClick={(e) => e.stopPropagation()}
+            >
+              View Project
+            </a>
+          )}
+        </div>
       </div>
     </div>
   );
