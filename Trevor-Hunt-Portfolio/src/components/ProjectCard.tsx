@@ -4,11 +4,13 @@ import type { Project } from "../types/project";
 interface ProjectCardProps {
   project: Project;
   onViewFamilyTree?: () => void;
+  onViewCapsim?: () => void;
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({
   project,
   onViewFamilyTree,
+  onViewCapsim,
 }) => {
   // Handler for card click
   const handleCardClick = () => {
@@ -17,6 +19,11 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       typeof onViewFamilyTree === "function"
     ) {
       onViewFamilyTree();
+    } else if (
+      project.title === "Capsim Simulation" &&
+      typeof onViewCapsim === "function"
+    ) {
+      onViewCapsim();
     } else {
       window.open(project.link, "_blank", "noopener,noreferrer");
     }
@@ -81,6 +88,18 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
               onClick={(e) => {
                 e.stopPropagation();
                 onViewFamilyTree();
+              }}
+            >
+              View Project
+            </button>
+          ) : project.title === "Capsim Simulation" &&
+            typeof onViewCapsim === "function" ? (
+            <button
+              type="button"
+              className="inline-block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors duration-300"
+              onClick={(e) => {
+                e.stopPropagation();
+                onViewCapsim();
               }}
             >
               View Project

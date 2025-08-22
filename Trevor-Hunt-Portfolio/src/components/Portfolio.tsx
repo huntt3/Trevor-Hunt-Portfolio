@@ -26,6 +26,12 @@ const Portfolio: React.FC = () => {
     setModalContent(text);
     setModalOpen(true);
   };
+
+  // Show Capsim.xlsx modal
+  const showCapsimModal = () => {
+    setModalContent("CAPSIM_XLSX");
+    setModalOpen(true);
+  };
   const [projectData, setProjectData] = useState<ProjectData>({});
   const [certificationData, setCertificationData] = useState<CertificationData>(
     {}
@@ -197,9 +203,14 @@ const Portfolio: React.FC = () => {
                       ? showFamilyTreeModal
                       : undefined
                   }
+                  onViewCapsim={
+                    project.title === "Capsim Simulation"
+                      ? showCapsimModal
+                      : undefined
+                  }
                 />
               ))}
-              {/* Modal for Family Tree Database */}
+              {/* Modal for Family Tree Database and Capsim Simulation */}
               {modalOpen && (
                 <div
                   className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60"
@@ -216,12 +227,33 @@ const Portfolio: React.FC = () => {
                     >
                       &times;
                     </button>
-                    <h2 className="text-2xl font-bold mb-4">
-                      Family Tree Database SQL
-                    </h2>
-                    <pre className="overflow-x-auto overflow-y-auto whitespace-pre-wrap text-sm bg-gray-100 p-4 rounded max-h-[60vh]">
-                      {modalContent}
-                    </pre>
+                    {modalContent === "CAPSIM_XLSX" ? (
+                      <>
+                        <h2 className="text-2xl font-bold mb-4">
+                          Capsim Simulation Excel
+                        </h2>
+                        <a
+                          href="/Capsim.xlsx"
+                          download
+                          className="inline-block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors duration-300 mb-4"
+                        >
+                          Download Capsim.xlsx
+                        </a>
+                        <p className="text-gray-700">
+                          Open the file in Excel or Google Sheets to view the
+                          simulation data.
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <h2 className="text-2xl font-bold mb-4">
+                          Family Tree Database SQL
+                        </h2>
+                        <pre className="overflow-x-auto overflow-y-auto whitespace-pre-wrap text-sm bg-gray-100 p-4 rounded max-h-[60vh]">
+                          {modalContent}
+                        </pre>
+                      </>
+                    )}
                   </div>
                 </div>
               )}
