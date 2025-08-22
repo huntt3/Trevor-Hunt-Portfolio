@@ -1,10 +1,10 @@
 {
   "Projects": [
     {
-      "title": "NASA API",
-      "description": "Interactive web app that fetches data from NASA's API. I embeded videos and showcased photos sorted and filtered by date. Descriptions were shown in a modal when clicked.",
-      "toolsUsed": ["Javascript", "HTML", "CSS"],
-      "link": "https://github.com/huntt3/07-nasa-space-explorer",
+      "title": "Civilization 6 Helper",
+      "description": "",
+      "toolsUsed": ["React", "HTML", "Tailwind", "Vite"],
+      "link": "https://huntt3.github.io/Civ-6-Helper/",
       "image": ""
     },
     {
@@ -15,17 +15,30 @@
       "image": ""
     },
     {
-      "title": "Civilization 6 Helper",
-      "description": "",
-      "toolsUsed": ["React", "HTML", "Tailwind", "Vite"],
-      "link": "https://huntt3.github.io/Civ-6-Helper/",
+      "title": "Loreal Routine Builder",
+      "description": "Built a wrapper for a customized open-ai chatbot that gave customized answers based on chosen items and given answers.",
+      "toolsUsed": [
+        "Javascript",
+        "HTML",
+        "CSS",
+        "Chatbot",
+        "Cloudflare Workers"
+      ],
+      "link": "https://huntt3.github.io/09-prj-loreal-routine-builder/",
+      "image": ""
+    },
+    {
+      "title": "NASA API",
+      "description": "Interactive web app that fetches data from NASA's API. I embeded videos and showcased photos sorted and filtered by date. Descriptions were shown in a modal when clicked.",
+      "toolsUsed": ["Javascript", "HTML", "CSS"],
+      "link": "https://huntt3.github.io/07-nasa-space-explorer/",
       "image": ""
     },
     {
       "title": "Fernet Decryption",
       "description": "",
       "toolsUsed": ["Python", "Pillow", "Leadership", "Teamwork"],
-      "link": "https://huntt3.github.io/06-Charity-water-game/",
+      "link": "https://github.com/huntt3/Cat_FinalProject",
       "image": ""
     },
     {
@@ -47,13 +60,6 @@
       "description": "",
       "toolsUsed": ["C#", "ASP.NET Core", "Leadership", "Teamwork"],
       "link": "https://github.com/huntt3/LeetCode-Group-Project",
-      "image": ""
-    },
-    {
-      "title": "Loreal Routine Builder",
-      "description": "Built a wrapper for a customized open-ai chatbot that gave customized answers based on chosen items and given answers.",
-      "toolsUsed": ["Javascript", "HTML", "CSS", "Chatbot"],
-      "link": "https://huntt3.github.io/09-prj-loreal-routine-builder/",
       "image": ""
     }
   ]
