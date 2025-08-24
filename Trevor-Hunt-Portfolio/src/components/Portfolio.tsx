@@ -7,7 +7,6 @@ import React, {
 } from "react";
 import ProjectCard from "./ProjectCard";
 import CertificationCard from "./CertificationCard";
-import FilterBar from "./FilterBar";
 import Pagination from "./Pagination";
 import type { ProjectData, CertificationData } from "../types/project";
 
@@ -45,29 +44,17 @@ const Portfolio: React.FC = () => {
   const [currentProjectPage, setCurrentProjectPage] = useState(1);
   const [currentCertificationPage, setCurrentCertificationPage] = useState(1);
 
-  // FilterBar responsive state
-  const [isSmallScreen, setIsSmallScreen] = useState(false);
+  // FilterBar state for all screen sizes
   const [isFilterBarVisible, setIsFilterBarVisible] = useState(false);
   const [isFilterBarExpanded, setIsFilterBarExpanded] = useState(false);
+  const [showAllTools, setShowAllTools] = useState(false);
   const filterBarRef = useRef<HTMLDivElement>(null);
   const hoverZoneRef = useRef<HTMLDivElement>(null);
-  const [isSticky, setIsSticky] = useState(false);
 
-  // Check screen size and handle responsive filter bar behavior
+  // Check screen size for responsive behavior
   useEffect(() => {
     const checkScreenSize = () => {
-      const width = window.innerWidth;
-      const smallScreen = width < 1024; // Hide filter bar below lg breakpoint
-      setIsSmallScreen(smallScreen);
-
-      if (!smallScreen) {
-        // Always show on large screens
-        setIsFilterBarVisible(true);
-        setIsFilterBarExpanded(true);
-      } else {
-        // Hide by default on small screens
-        setIsFilterBarExpanded(false);
-      }
+      // This can be used later if we need specific screen size logic
     };
 
     checkScreenSize();
@@ -77,18 +64,12 @@ const Portfolio: React.FC = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (!filterBarRef.current) return;
-      const rect = filterBarRef.current.getBoundingClientRect();
-      setIsSticky(rect.top <= 0);
-
-      // Show filter bar indicator when scrolled on small screens
-      if (isSmallScreen) {
-        setIsFilterBarVisible(window.scrollY > 100);
-      }
+      // Show filter bar indicator when scrolled for all screen sizes
+      setIsFilterBarVisible(window.scrollY > 100);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [isSmallScreen]);
+  }, []);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState("");
   // Load huntt3_Pt1Lab5.txt for modal
@@ -215,49 +196,41 @@ const Portfolio: React.FC = () => {
   };
 
   const handleHoverZoneEnter = () => {
-    if (isSmallScreen && isFilterBarVisible) {
+    if (isFilterBarVisible) {
       setIsFilterBarExpanded(true);
     }
   };
 
   const handleHoverZoneLeave = () => {
-    if (isSmallScreen) {
-      setIsFilterBarExpanded(false);
-    }
+    setIsFilterBarExpanded(false);
   };
 
   // Touch support for mobile
   const handleTouchStart = () => {
-    if (isSmallScreen && isFilterBarVisible) {
+    if (isFilterBarVisible) {
       setIsFilterBarExpanded(true);
     }
   };
 
-  const handleClickOutside = useCallback(
-    (event: MouseEvent | TouchEvent) => {
-      if (
-        isSmallScreen &&
-        filterBarRef.current &&
-        hoverZoneRef.current &&
-        !filterBarRef.current.contains(event.target as Node) &&
-        !hoverZoneRef.current.contains(event.target as Node)
-      ) {
-        setIsFilterBarExpanded(false);
-      }
-    },
-    [isSmallScreen]
-  );
+  const handleClickOutside = useCallback((event: MouseEvent | TouchEvent) => {
+    if (
+      filterBarRef.current &&
+      hoverZoneRef.current &&
+      !filterBarRef.current.contains(event.target as Node) &&
+      !hoverZoneRef.current.contains(event.target as Node)
+    ) {
+      setIsFilterBarExpanded(false);
+    }
+  }, []);
 
   useEffect(() => {
-    if (isSmallScreen) {
-      document.addEventListener("mousedown", handleClickOutside);
-      document.addEventListener("touchstart", handleClickOutside);
-      return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-        document.removeEventListener("touchstart", handleClickOutside);
-      };
-    }
-  }, [isSmallScreen, handleClickOutside]);
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
+  }, [handleClickOutside]);
 
   const handleToolToggle = (tool: string) => {
     setSelectedTools((prev) =>
@@ -335,23 +308,8 @@ const Portfolio: React.FC = () => {
           </h1>
         </header>
 
-        {/* Desktop FilterBar - Always visible on large screens */}
-        {!isSmallScreen && (
-          <div
-            ref={filterBarRef}
-            className={isSticky ? "sticky top-0 z-40 bg-gray-100" : ""}
-          >
-            <FilterBar
-              tools={allTools}
-              selectedTools={selectedTools}
-              onToolToggle={handleToolToggle}
-              onClearFilters={handleClearFilters}
-            />
-          </div>
-        )}
-
-        {/* Mobile/Tablet Hover Zone - Top invisible area that triggers filter bar */}
-        {isSmallScreen && isFilterBarVisible && (
+        {/* Universal Hover Zone - Top invisible area that triggers filter bar */}
+        {isFilterBarVisible && (
           <div
             ref={hoverZoneRef}
             className="fixed top-0 left-0 right-0 h-12 z-50 bg-transparent"
@@ -361,58 +319,62 @@ const Portfolio: React.FC = () => {
           />
         )}
 
-        {/* Mobile/Tablet FilterBar - Collapsible */}
-        {isSmallScreen && (
-          <>
-            {/* Filter indicator when collapsed */}
-            {isFilterBarVisible && !isFilterBarExpanded && (
-              <div className="fixed top-0 left-0 right-0 z-40 bg-blue-600 text-white text-center py-2 text-sm">
-                <div className="flex items-center justify-center space-x-2">
-                  <span>🔍</span>
-                  <span>Hover or tap to filter projects</span>
-                  {selectedTools.length > 0 && (
-                    <span className="bg-blue-700 px-2 py-1 rounded text-xs">
-                      {selectedTools.length} active
-                    </span>
-                  )}
-                </div>
+        {/* Universal Collapsible FilterBar */}
+        <>
+          {/* Filter indicator when collapsed */}
+          {isFilterBarVisible && !isFilterBarExpanded && (
+            <div className="fixed top-0 left-0 right-0 z-40 bg-blue-600 text-white text-center py-2 text-sm lg:text-base">
+              <div className="flex items-center justify-center space-x-2">
+                <span>🔍</span>
+                <span className="hidden sm:inline">
+                  Hover or tap to filter projects
+                </span>
+                <span className="sm:hidden">Tap to filter</span>
+                {selectedTools.length > 0 && (
+                  <span className="bg-blue-700 px-2 py-1 rounded text-xs">
+                    {selectedTools.length} active
+                  </span>
+                )}
               </div>
-            )}
+            </div>
+          )}
 
-            {/* Expanded FilterBar */}
-            <div
-              ref={filterBarRef}
-              className={`
-                fixed top-0 left-0 right-0 z-50 bg-gray-100 shadow-lg border-b border-gray-200
-                transform transition-transform duration-300 ease-in-out
-                ${isFilterBarExpanded ? "translate-y-0" : "-translate-y-full"}
-                ${!isFilterBarVisible ? "hidden" : ""}
-              `}
-              onMouseEnter={handleHoverZoneEnter}
-              onMouseLeave={handleHoverZoneLeave}
-            >
-              <div className="container mx-auto px-4 py-4">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-sm font-semibold text-gray-800">
-                    Filter by Tools
-                  </h3>
-                  <button
-                    onClick={handleFilterBarToggle}
-                    className="text-gray-600 hover:text-gray-800 p-1"
-                    aria-label="Close filter bar"
-                  >
-                    ✕
-                  </button>
-                </div>
+          {/* Expanded FilterBar */}
+          <div
+            ref={filterBarRef}
+            className={`
+              fixed top-0 left-0 right-0 z-50 bg-gray-100 shadow-lg border-b border-gray-200
+              transform transition-transform duration-300 ease-in-out
+              ${isFilterBarExpanded ? "translate-y-0" : "-translate-y-full"}
+              ${!isFilterBarVisible ? "hidden" : ""}
+            `}
+            onMouseEnter={handleHoverZoneEnter}
+            onMouseLeave={handleHoverZoneLeave}
+          >
+            <div className="container mx-auto px-4 py-3 lg:py-4">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm lg:text-base font-semibold text-gray-800">
+                  Filter by Tools
+                </h3>
+                <button
+                  onClick={handleFilterBarToggle}
+                  className="text-gray-600 hover:text-gray-800 p-1"
+                  aria-label="Close filter bar"
+                >
+                  ✕
+                </button>
+              </div>
 
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {allTools.slice(0, 8).map((tool) => {
+              {/* Mobile/Tablet: Show limited tools with expand option */}
+              <div className="flex flex-wrap gap-2 mb-3 lg:hidden">
+                {(showAllTools ? allTools : allTools.slice(0, 8)).map(
+                  (tool) => {
                     const isSelected = selectedTools.includes(tool);
                     return (
                       <button
                         key={tool}
                         onClick={() => handleToolToggle(tool)}
-                        className={`px-3 py-1 rounded-full text-xs font-medium transition-colors duration-200 ${
+                        className={`px-2 py-1 rounded-full text-xs font-medium transition-colors duration-200 ${
                           isSelected
                             ? "bg-blue-600 text-white"
                             : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
@@ -421,34 +383,59 @@ const Portfolio: React.FC = () => {
                         {tool}
                       </button>
                     );
-                  })}
-                  {allTools.length > 8 && (
-                    <span className="text-xs text-gray-500 px-2 py-1">
-                      +{allTools.length - 8} more...
-                    </span>
-                  )}
-                </div>
-
-                {selectedTools.length > 0 && (
-                  <div className="flex items-center justify-between">
-                    <p className="text-xs text-gray-600">
-                      Active: {selectedTools.join(", ")}
-                    </p>
-                    <button
-                      onClick={handleClearFilters}
-                      className="text-xs text-blue-600 hover:text-blue-800 underline"
-                    >
-                      Clear all
-                    </button>
-                  </div>
+                  }
+                )}
+                {allTools.length > 8 && (
+                  <button
+                    onClick={() => setShowAllTools(!showAllTools)}
+                    className="px-2 py-1 rounded-full text-xs font-medium bg-gray-200 text-gray-600 hover:bg-gray-300 transition-colors duration-200"
+                  >
+                    {showAllTools
+                      ? "Show Less"
+                      : `+${allTools.length - 8} more...`}
+                  </button>
                 )}
               </div>
-            </div>
-          </>
-        )}
 
-        {/* Add top padding when filter bar is visible on small screens */}
-        <div className={isSmallScreen && isFilterBarVisible ? "pt-12" : ""}>
+              {/* Desktop: Show all tools */}
+              <div className="hidden lg:flex flex-wrap gap-2 mb-3">
+                {allTools.map((tool) => {
+                  const isSelected = selectedTools.includes(tool);
+                  return (
+                    <button
+                      key={tool}
+                      onClick={() => handleToolToggle(tool)}
+                      className={`px-3 py-2 rounded-full text-sm font-medium transition-colors duration-200 ${
+                        isSelected
+                          ? "bg-blue-600 text-white"
+                          : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                      }`}
+                    >
+                      {tool}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {selectedTools.length > 0 && (
+                <div className="flex items-center justify-between">
+                  <p className="text-xs lg:text-sm text-gray-600">
+                    Active: {selectedTools.join(", ")}
+                  </p>
+                  <button
+                    onClick={handleClearFilters}
+                    className="text-xs lg:text-sm text-blue-600 hover:text-blue-800 underline"
+                  >
+                    Clear all
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </>
+
+        {/* Add top padding when filter bar is visible */}
+        <div className={isFilterBarVisible ? "pt-12" : ""}>
           {/* Projects Section */}
           <section id="projects-section" className="mb-16">
             <h2 className="text-3xl font-bold text-gray-800 mb-6">
