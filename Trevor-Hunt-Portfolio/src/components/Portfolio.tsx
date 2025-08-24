@@ -2,9 +2,43 @@ import React, { useState, useEffect, useMemo, useRef } from "react";
 import ProjectCard from "./ProjectCard";
 import CertificationCard from "./CertificationCard";
 import FilterBar from "./FilterBar";
+import Pagination from "./Pagination";
 import type { ProjectData, CertificationData } from "../types/project";
 
 const Portfolio: React.FC = () => {
+  // Pagination configuration - responsive items per page
+  const useResponsiveItemsPerPage = () => {
+    const [itemsPerPage, setItemsPerPage] = useState(6);
+
+    useEffect(() => {
+      const updateItemsPerPage = () => {
+        const width = window.innerWidth;
+        if (width < 768) {
+          // Mobile: fewer items to reduce scrolling
+          setItemsPerPage(4);
+        } else if (width < 1024) {
+          // Tablet: moderate amount
+          setItemsPerPage(6);
+        } else {
+          // Desktop: more items since we have more space
+          setItemsPerPage(9);
+        }
+      };
+
+      updateItemsPerPage();
+      window.addEventListener("resize", updateItemsPerPage);
+      return () => window.removeEventListener("resize", updateItemsPerPage);
+    }, []);
+
+    return itemsPerPage;
+  };
+
+  const itemsPerPage = useResponsiveItemsPerPage();
+
+  // Pagination state
+  const [currentProjectPage, setCurrentProjectPage] = useState(1);
+  const [currentCertificationPage, setCurrentCertificationPage] = useState(1);
+
   const filterBarRef = useRef<HTMLDivElement>(null);
   const [isSticky, setIsSticky] = useState(false);
 
@@ -119,14 +153,62 @@ const Portfolio: React.FC = () => {
     );
   }, [allCertifications, selectedTools]);
 
+  // Pagination calculations for projects
+  const totalProjectPages = Math.ceil(filteredProjects.length / itemsPerPage);
+  const paginatedProjects = useMemo(() => {
+    const startIndex = (currentProjectPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return filteredProjects.slice(startIndex, endIndex);
+  }, [filteredProjects, currentProjectPage, itemsPerPage]);
+
+  // Pagination calculations for certifications
+  const totalCertificationPages = Math.ceil(
+    filteredCertifications.length / itemsPerPage
+  );
+  const paginatedCertifications = useMemo(() => {
+    const startIndex = (currentCertificationPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return filteredCertifications.slice(startIndex, endIndex);
+  }, [filteredCertifications, currentCertificationPage, itemsPerPage]);
+
   const handleToolToggle = (tool: string) => {
     setSelectedTools((prev) =>
       prev.includes(tool) ? prev.filter((t) => t !== tool) : [...prev, tool]
     );
+    // Reset to first page when filters change
+    setCurrentProjectPage(1);
+    setCurrentCertificationPage(1);
   };
 
   const handleClearFilters = () => {
     setSelectedTools([]);
+    // Reset to first page when clearing filters
+    setCurrentProjectPage(1);
+    setCurrentCertificationPage(1);
+  };
+
+  // Pagination handlers
+  const handleProjectPageChange = (page: number) => {
+    setCurrentProjectPage(page);
+    // Scroll to top of projects section for better UX
+    const projectsSection = document.getElementById("projects-section");
+    if (projectsSection) {
+      projectsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
+  const handleCertificationPageChange = (page: number) => {
+    setCurrentCertificationPage(page);
+    // Scroll to top of certifications section for better UX
+    const certificationsSection = document.getElementById(
+      "certifications-section"
+    );
+    if (certificationsSection) {
+      certificationsSection.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
   };
 
   if (loading) {
@@ -178,86 +260,106 @@ const Portfolio: React.FC = () => {
         </div>
 
         {/* Projects Section */}
-        <section className="mb-16">
+        <section id="projects-section" className="mb-16">
           <h2 className="text-3xl font-bold text-gray-800 mb-6">
             Featured Projects
           </h2>
 
           <div className="mb-6">
             <p className="text-gray-600">
-              Showing {filteredProjects.length} of {allProjects.length} projects
+              Showing {Math.min(itemsPerPage, filteredProjects.length)} of{" "}
+              {filteredProjects.length} projects
+              {filteredProjects.length !== allProjects.length && (
+                <span> (filtered from {allProjects.length} total)</span>
+              )}
               {selectedTools.length > 0 && (
-                <span> filtered by: {selectedTools.join(", ")}</span>
+                <span className="block sm:inline">
+                  {" "}
+                  filtered by: {selectedTools.join(", ")}
+                </span>
               )}
             </p>
           </div>
 
           {filteredProjects.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredProjects.map((project, index) => (
-                <ProjectCard
-                  key={`project-${project.title}-${index}`}
-                  project={project}
-                  onViewFamilyTree={
-                    project.title === "Family Tree Database"
-                      ? showFamilyTreeModal
-                      : undefined
-                  }
-                  onViewCapsim={
-                    project.title === "Capsim Simulation"
-                      ? showCapsimModal
-                      : undefined
-                  }
-                />
-              ))}
-              {/* Modal for Family Tree Database and Capsim Simulation */}
-              {modalOpen && (
-                <div
-                  className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60"
-                  onClick={() => setModalOpen(false)}
-                >
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {paginatedProjects.map((project, index) => (
+                  <ProjectCard
+                    key={`project-${project.title}-${index}`}
+                    project={project}
+                    onViewFamilyTree={
+                      project.title === "Family Tree Database"
+                        ? showFamilyTreeModal
+                        : undefined
+                    }
+                    onViewCapsim={
+                      project.title === "Capsim Simulation"
+                        ? showCapsimModal
+                        : undefined
+                    }
+                  />
+                ))}
+                {/* Modal for Family Tree Database and Capsim Simulation */}
+                {modalOpen && (
                   <div
-                    className="bg-white rounded-lg shadow-lg max-w-2xl w-full p-6 relative"
-                    onClick={(e) => e.stopPropagation()}
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60"
+                    onClick={() => setModalOpen(false)}
                   >
-                    <button
-                      className="absolute top-2 right-2 text-gray-500 hover:text-gray-800 text-xl"
-                      onClick={() => setModalOpen(false)}
-                      aria-label="Close"
+                    <div
+                      className="bg-white rounded-lg shadow-lg max-w-2xl w-full p-6 relative"
+                      onClick={(e) => e.stopPropagation()}
                     >
-                      &times;
-                    </button>
-                    {modalContent === "CAPSIM_XLSX" ? (
-                      <>
-                        <h2 className="text-2xl font-bold mb-4">
-                          Capsim Simulation Excel
-                        </h2>
-                        <a
-                          href="Capsim.xlsx"
-                          download
-                          className="inline-block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors duration-300 mb-4"
-                        >
-                          Download Capsim.xlsx
-                        </a>
-                        <p className="text-gray-700">
-                          Open the file in Excel or Google Sheets to view the
-                          simulation data.
-                        </p>
-                      </>
-                    ) : (
-                      <>
-                        <h2 className="text-2xl font-bold mb-4">
-                          Family Tree Database SQL
-                        </h2>
-                        <pre className="overflow-x-auto overflow-y-auto whitespace-pre-wrap text-sm bg-gray-100 p-4 rounded max-h-[60vh]">
-                          {modalContent}
-                        </pre>
-                      </>
-                    )}
+                      <button
+                        className="absolute top-2 right-2 text-gray-500 hover:text-gray-800 text-xl"
+                        onClick={() => setModalOpen(false)}
+                        aria-label="Close"
+                      >
+                        &times;
+                      </button>
+                      {modalContent === "CAPSIM_XLSX" ? (
+                        <>
+                          <h2 className="text-2xl font-bold mb-4">
+                            Capsim Simulation Excel
+                          </h2>
+                          <a
+                            href="Capsim.xlsx"
+                            download
+                            className="inline-block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors duration-300 mb-4"
+                          >
+                            Download Capsim.xlsx
+                          </a>
+                          <p className="text-gray-700">
+                            Open the file in Excel or Google Sheets to view the
+                            simulation data.
+                          </p>
+                        </>
+                      ) : (
+                        <>
+                          <h2 className="text-2xl font-bold mb-4">
+                            Family Tree Database SQL
+                          </h2>
+                          <pre className="overflow-x-auto overflow-y-auto whitespace-pre-wrap text-sm bg-gray-100 p-4 rounded max-h-[60vh]">
+                            {modalContent}
+                          </pre>
+                        </>
+                      )}
+                    </div>
                   </div>
-                </div>
+                )}
+              </div>
+
+              {/* Projects Pagination */}
+              {totalProjectPages > 1 && (
+                <Pagination
+                  currentPage={currentProjectPage}
+                  totalPages={totalProjectPages}
+                  onPageChange={handleProjectPageChange}
+                  itemsPerPage={itemsPerPage}
+                  totalItems={filteredProjects.length}
+                />
               )}
-            </div>
+            </>
           ) : (
             <div className="text-center py-12">
               <p className="text-gray-600 mb-4">
@@ -268,30 +370,49 @@ const Portfolio: React.FC = () => {
         </section>
 
         {/* Certifications Section */}
-        <section className="mb-16">
+        <section id="certifications-section" className="mb-16">
           <h2 className="text-3xl font-bold text-gray-800 mb-6">
             Certifications
           </h2>
 
           <div className="mb-6">
             <p className="text-gray-600">
-              Showing {filteredCertifications.length} of{" "}
-              {allCertifications.length} certifications
+              Showing {Math.min(itemsPerPage, filteredCertifications.length)} of{" "}
+              {filteredCertifications.length} certifications
+              {filteredCertifications.length !== allCertifications.length && (
+                <span> (filtered from {allCertifications.length} total)</span>
+              )}
               {selectedTools.length > 0 && (
-                <span> filtered by: {selectedTools.join(", ")}</span>
+                <span className="block sm:inline">
+                  {" "}
+                  filtered by: {selectedTools.join(", ")}
+                </span>
               )}
             </p>
           </div>
 
           {filteredCertifications.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredCertifications.map((certification, index) => (
-                <CertificationCard
-                  key={`certification-${certification.title}-${index}`}
-                  certification={certification}
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {paginatedCertifications.map((certification, index) => (
+                  <CertificationCard
+                    key={`certification-${certification.title}-${index}`}
+                    certification={certification}
+                  />
+                ))}
+              </div>
+
+              {/* Certifications Pagination */}
+              {totalCertificationPages > 1 && (
+                <Pagination
+                  currentPage={currentCertificationPage}
+                  totalPages={totalCertificationPages}
+                  onPageChange={handleCertificationPageChange}
+                  itemsPerPage={itemsPerPage}
+                  totalItems={filteredCertifications.length}
                 />
-              ))}
-            </div>
+              )}
+            </>
           ) : (
             <div className="text-center py-12">
               <p className="text-gray-600 mb-4">
